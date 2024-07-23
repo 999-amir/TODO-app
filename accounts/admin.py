@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import CostumeUser
+from .models import CostumeUser, ProfileModel
 from django.contrib.auth.models import Group
 from .forms import CostumeUserCreationForm, CostumeUserChangeForm
 from django.contrib.auth.admin import UserAdmin
+from todo.admin import TodoInline
 
 
 class CostumeUserAdmin(UserAdmin):
@@ -13,7 +14,7 @@ class CostumeUserAdmin(UserAdmin):
     list_filter = ('is_admin',)
     fieldsets = (
         (
-            'USER-INFORMATION',
+            'USER',
             {'fields': ('email', 'password')}
         ),
         (
@@ -39,3 +40,22 @@ class CostumeUserAdmin(UserAdmin):
 
 admin.site.unregister(Group)
 admin.site.register(CostumeUser, CostumeUserAdmin)
+
+
+@admin.register(ProfileModel)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('f_name', 'l_name', 'user')
+    fieldsets = (
+        (
+            'USER-INFORMATION',
+            {'fields': ('user', 'f_name', 'l_name', 'description')}
+        ),
+        (
+            'DATE',
+            {'fields': ('updated', 'created')}
+        ),
+    )
+    search_fields = ('f_name', 'l_name')
+    ordering = ('l_name', 'user')
+    readonly_fields = ('created', 'updated')
+    inlines = (TodoInline,)

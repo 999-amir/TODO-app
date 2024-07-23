@@ -3,3 +3,4 @@ manage.py
 .idea
 main/settings.py
 accounts/migrations
+todo/migrations
