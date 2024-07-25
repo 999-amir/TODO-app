@@ -4,16 +4,16 @@ from accounts.models import ProfileModel
 
 class TodoModel(models.Model):
     LEVELS = (
-        ('easy', 'green'),
-        ('medium', 'amber'),
-        ('hard', 'red')
+        ('green', 'easy'),
+        ('orange', 'medium'),
+        ('red', 'hard')
     )
 
     profile = models.ForeignKey(ProfileModel, on_delete=models.CASCADE)
     level = models.CharField(max_length=10, default='easy', choices=LEVELS)
     job = models.TextField(max_length=200)
     is_done = models.BooleanField(default=False)
-    dead_end = models.DateTimeField()
+    dead_end = models.DateField()
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
