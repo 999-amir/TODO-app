@@ -20,3 +20,6 @@ class TodoModel(models.Model):
 
     def __str__(self):
         return str(self.profile)
+
+    def get_snippet(self):
+        return self.job[:20]
