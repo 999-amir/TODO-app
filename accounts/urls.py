@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 
@@ -9,5 +9,7 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
-    path('profile-description', views.ProfileDescription.as_view(), name='profile_description')
+    path('profile-description', views.ProfileDescription.as_view(), name='profile_description'),
+    # api
+    path('api/v1/', include('accounts.api.v1.urls', namespace='api_vi'))
 ]
