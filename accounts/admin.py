@@ -44,7 +44,7 @@ admin.site.register(CostumeUser, CostumeUserAdmin)
 
 @admin.register(ProfileModel)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('f_name', 'l_name', 'user')
+    list_display = ('user', 'f_name', 'l_name')
     fieldsets = (
         (
             'USER-INFORMATION',

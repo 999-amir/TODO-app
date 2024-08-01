@@ -1,26 +1,18 @@
 from rest_framework.generics import GenericAPIView
-from .serializers import CostumeUserSerializer, CustomAuthTokenSerializer
+from .serializers import CustomUserSerializer, CustomAuthTokenSerializer, CustomTokenObtainPairSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 # SESSION
 class SignupGenericAPIView(GenericAPIView):
-    serializer_class = CostumeUserSerializer
-
-    def get(self, request):
-        user = self.request.user
-        if user.id:
-            serializer = self.serializer_class(user)
-            return Response(serializer.data)
-        return Response({"detail": "need authentication"}, status=status.HTTP_200_OK)
+    serializer_class = CustomUserSerializer
 
     def post(self, request):
-        if self.request.user.is_authenticated:
-            return Response({'detail': 'need to logout first to create new account'}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         # CostumeUser.objects.create_user(email=serializer.validated_data['email'], password=serializer.validated_data['password'])
@@ -54,3 +46,8 @@ class CustomDiscardAuthToken(APIView):
     def post(self, request):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# JWT
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer

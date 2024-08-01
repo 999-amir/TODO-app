@@ -5,9 +5,10 @@ from django.core import exceptions
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
-class CostumeUserSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(max_length=250, write_only=True)
 
     class Meta:
@@ -35,6 +36,7 @@ class CostumeUserSerializer(serializers.ModelSerializer):
         return CostumeUser.objects.create_user(**validated_data)
 
 
+# TOKEN
 class CustomAuthTokenSerializer(serializers.Serializer):
     email = serializers.CharField(
         label=_("email"),
@@ -71,3 +73,12 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
+
+
+# JWT
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        validated_data = super().validate(attrs)
+        validated_data['email'] = self.user.email
+        validated_data['user_id'] = self.user.id
+        return validated_data
