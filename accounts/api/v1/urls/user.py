@@ -1,8 +1,8 @@
 from django.urls import path
-from . import views
+from .. import views
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
-app_name = 'api_v1'
+app_name = 'user'
 
 urlpatterns = [
     path('signup/', views.SignupGenericAPIView.as_view(), name='signup'),
