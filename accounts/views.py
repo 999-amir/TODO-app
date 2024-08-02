@@ -25,8 +25,7 @@ class SignupView(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            user = CostumeUser.objects.create_user(email=cd['email'], password=cd['password_1'])
-            login(request, user)
+            CostumeUser.objects.create_user(email=cd['email'], password=cd['password_1'])
             messages.success(request, 'registered complete', 'green-600')
             return redirect('todo:main_page')
         context = {
@@ -56,6 +55,9 @@ class LoginView(View):
             cd = form.cleaned_data
             user = authenticate(request, email=cd['email'], password=cd['password'])
             if user is not None:
+                if not user.is_verify:
+                    messages.warning(request, 'account still not verified', 'red-600')
+                    return redirect('accounts:login')
                 login(request, user)
                 messages.success(request, 'login complete', 'green-600')
                 return redirect('todo:main_page')

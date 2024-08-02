@@ -7,6 +7,7 @@ class CostumeUser(AbstractBaseUser):
     email = models.EmailField(max_length=250, unique=True)
 
     is_active = models.BooleanField(default=True)
+    is_verify = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     objects = CostumeUserManager()
     USERNAME_FIELD = 'email'

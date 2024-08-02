@@ -10,8 +10,8 @@ class CostumeUserAdmin(UserAdmin):
     form = CostumeUserChangeForm
     add_form = CostumeUserCreationForm
 
-    list_display = ('email', 'is_admin', 'last_login')
-    list_filter = ('is_admin',)
+    list_display = ('email', 'is_active', 'is_verify', 'is_admin', 'last_login')
+    list_filter = ('is_active', 'is_verify', 'is_admin')
     fieldsets = (
         (
             'USER',
@@ -19,7 +19,7 @@ class CostumeUserAdmin(UserAdmin):
         ),
         (
             'USER-PERMISSIONS',
-            {'fields': ('is_active', 'is_admin')}
+            {'fields': ('is_active', 'is_verify', 'is_admin')}
         ),
         (
             'DATE',
