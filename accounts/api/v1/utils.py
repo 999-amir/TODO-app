@@ -16,5 +16,5 @@ def send_threading_email(tpl_file_directory, data, to_user):
     # email_obj = EmailMessage(tpl_file_directory, data, settings.EMAIL_HOST_USER, [to_user])
     # EmailThreading(email_obj).start()
     print('********************************')
-    print(f"http://127.0.0.1:8000/accounts/api/v1/user/activation/confirm/{data['token']}")
+    print(data['token'])
     print('********************************')

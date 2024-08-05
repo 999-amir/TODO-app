@@ -1,6 +1,7 @@
 import jwt
 from rest_framework.generics import GenericAPIView
-from ..serializers.user import CustomUserSerializer, CustomAuthTokenSerializer, CustomTokenObtainPairSerializer, ActivationResendSerializer
+from ..serializers.user import (CustomUserSerializer, CustomAuthTokenSerializer, CustomTokenObtainPairSerializer, ActivationResendSerializer,
+                                ForgetPasswordSerializer, ConfirmFrogetPasswordSerializer)
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -65,6 +66,47 @@ class ActivationResendAPIView(GenericAPIView):
     def get_token_for_user(self, user):
             refresh = RefreshToken.for_user(user)
             return str(refresh.access_token)
+
+
+class ForgetPasswordAPIView(GenericAPIView):
+    serializer_class = ForgetPasswordSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token = self.get_token_for_user(user)
+        send_threading_email('email/activation.tpl', {'token': token}, user.email)
+        return Response('email send')
+
+    def get_token_for_user(self, user):
+            refresh = RefreshToken.for_user(user)
+            return str(refresh.access_token)
+
+
+class ConfirmForgetPasswordAPIView(GenericAPIView):
+    serializer_class = ConfirmFrogetPasswordSerializer
+
+    def post(self, request, token):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            token = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = token.get('user_id')
+        except jwt.ExpiredSignatureError:
+            return Response({'detail': 'token has been expired'}, status=status.HTTP_400_BAD_REQUEST)
+        except jwt.InvalidSignatureError:
+            return Response({'detail': 'token is not vallid'}, status=status.HTTP_400_BAD_REQUEST)
+        except jwt.DecodeError:
+            return Response({'detail': 'token is not vallid'}, status=status.HTTP_400_BAD_REQUEST)
+        user = get_object_or_404(CostumeUser, pk=user_id)
+        if not user.is_verify:
+            user.is_verify = True
+        user.set_password(serializer.validated_data['pass1'])
+        user.save()
+        return Response('password changed successfully')
+
+
 
 
 # TOKEN

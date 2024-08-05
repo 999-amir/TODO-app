@@ -51,6 +51,34 @@ class ActivationResendSerializer(serializers.Serializer):
         return super().validate(attrs)
 
 
+class ForgetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        try:
+            user = get_object_or_404(CostumeUser, email=email)
+        except CostumeUser.DoesNotExist:
+            raise serializers.ValidationError('user does not exist')
+        attrs['user'] = user
+        return super().validate(attrs)
+
+
+class ConfirmFrogetPasswordSerializer(serializers.Serializer):
+    pass1 = serializers.CharField(required=True)
+    pass2 = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        if attrs.get('pass1') != attrs.get('pass2'):
+            raise serializers.ValidationError({'detail': 'passwords doesnt match'})
+        try:
+            validate_password(attrs.get('pass1'))
+        except exceptions.ValidationError as e:
+            raise serializers.ValidationError({'new_password': list(e.messages)})
+        return super().validate(attrs)
+
+
+
 # TOKEN
 class CustomAuthTokenSerializer(serializers.Serializer):
     email = serializers.CharField(
