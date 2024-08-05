@@ -11,5 +11,5 @@ urlpatterns = [
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('profile-description', views.ProfileDescription.as_view(), name='profile_description'),
     # api
-    path('api/v1/', include('accounts.api.v1.urls', namespace='api_vi'))
+    path('api/v1/', include('accounts.api.v1.urls', namespace='api_v1')),
 ]
