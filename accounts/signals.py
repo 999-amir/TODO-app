@@ -9,7 +9,6 @@ def create_profile(sender, **kwargs):
         this function will create profile after user created
         """
     user = kwargs['instance']
-    print(kwargs)
     if kwargs['created']:
         ProfileModel.objects.create(user=user)
 

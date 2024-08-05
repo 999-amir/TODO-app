@@ -5,8 +5,7 @@ from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers, status
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework.response import Response
-
+from django.shortcuts import get_object_or_404
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -35,6 +34,21 @@ class CustomUserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('confirm_password', None)
         return CostumeUser.objects.create_user(**validated_data)
+
+
+class ActivationResendSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        try:
+            user = get_object_or_404(CostumeUser, email=email)
+        except CostumeUser.DoesNotExist:
+            raise serializers.ValidationError('user does not exist')
+        if user.is_verify:
+            raise serializers.ValidationError('user is already verified and activated')
+        attrs['user'] = user
+        return super().validate(attrs)
 
 
 # TOKEN
