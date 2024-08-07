@@ -67,9 +67,7 @@ class ActivationAPIView(APIView):
             )
         user = get_object_or_404(CostumeUser, pk=user_id)
         if user.is_verify:
-            return Response(
-                "your account has already been verified and activated"
-            )
+            return Response("your account has already been verified and activated", status.HTTP_400_BAD_REQUEST)
         user.is_verify = True
         user.save()
         return Response("your account has been verified and activated")

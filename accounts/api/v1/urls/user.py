@@ -5,7 +5,7 @@ from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 app_name = "user"
 
 urlpatterns = [
-    path("registration/", views.RegistrationAPIView.as_view(), name="signup"),
+    path("registration/", views.RegistrationAPIView.as_view(), name="registration"),
     path(
         "activation/confirm/<str:token>",
         views.ActivationAPIView.as_view(),
